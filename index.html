@@ -248,8 +248,8 @@
    Find it: Payhip Dashboard → Products → your product → Share/Embed → Embed Button tab
    Your link looks like: https://payhip.com/b/XXXXX  (XXXXX is your product key)
 */
-const PAYHIP_PRODUCT_KEY = 'YOUR_PRODUCT_KEY'; // e.g. 'RGsF'
-const PRICE_DISPLAY      = '$9 / month';        // shown to the user — set this to match your Payhip product price
+const PAYHIP_PRODUCT_KEY = 'K3TDI';
+const PRICE_DISPLAY      = '$79 / year';        // shown to the user — set this to match your Payhip product price
 const FREE_LIMIT         = 5;
 
 /* ── STATE ──────────────────────────────────────────────────── */
@@ -338,9 +338,13 @@ async function generate() {
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': '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',
+        'anthropic-version': '2023-06-01'
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514', max_tokens: 1000,
+        model: 'claude-sonnet-4-5', max_tokens: 1000,
         messages: [{ role: 'user', content:
           `You are a professional communication assistant. Write a reply to this ${selectedPlat} message.\n\nTone: ${selectedTone}\nPlatform: ${selectedPlat}\n\nMessage:\n"""\n${msg}\n"""\n\nRules:\n- Perfectly match the ${selectedTone} tone\n- Format correctly for ${selectedPlat}: Email gets greeting + sign-off; Slack/WhatsApp are short and casual; LinkedIn is semi-formal\n- Sound natural and human, not robotic\n- Skip filler phrases like "I hope this finds you well"\n- Output ONLY the reply text, nothing else`
         }]
@@ -374,7 +378,7 @@ async function generate() {
       </div>
       ${hitLimit ? `
       <div style="margin-top:12px;background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:10px;padding:14px;text-align:center">
-        <p style="font-size:13px;color:var(--text2);margin-bottom:10px">You've used all <strong style="color:var(--amber)">${FREE_LIMIT} free replies</strong>. Upgrade for unlimited.</p>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:10px">You've used all <strong style="color:var(--amber)">${FREE_LIMIT} free replies</strong>. Upgrade for unlimited yearly access.</p>
         <button onclick="showPaywall()" style="background:var(--green);color:#000;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font)">
           Upgrade to Pro ↗
         </button>
@@ -411,19 +415,19 @@ function showPaywall() {
     <div class="paywall">
       <div class="pw-icon">⚡</div>
       <h3>Unlock unlimited replies</h3>
-      <p>You've used your ${FREE_LIMIT} free replies.<br>Upgrade to Pro and reply to everything, forever.</p>
+      <p>You've used your ${FREE_LIMIT} free replies.<br>Upgrade to Pro — one payment, full year of unlimited replies.</p>
 
       <div class="perks">
-        <div class="perk"><span class="perk-icon">♾️</span> Unlimited replies every month</div>
+        <div class="perk"><span class="perk-icon">♾️</span> Unlimited replies for a full year</div>
         <div class="perk"><span class="perk-icon">📱</span> Gmail, LinkedIn, Slack & WhatsApp</div>
         <div class="perk"><span class="perk-icon">🎯</span> All 5 tone options</div>
         <div class="perk"><span class="perk-icon">⚡</span> Priority AI — fastest responses</div>
-        <div class="perk"><span class="perk-icon">❌</span> Cancel anytime</div>
+        <div class="perk"><span class="perk-icon">💰</span> Save vs monthly — best value</div>
       </div>
 
       <div class="price-display">
         <div class="price-main">${PRICE_DISPLAY}</div>
-        <div class="price-sub">Card, bank transfer, USSD & mobile money accepted</div>
+        <div class="price-sub">One-time payment · Full year access · Only $6.58/month</div>
       </div>
 
       <div class="payhip-wrap">
@@ -432,7 +436,7 @@ function showPaywall() {
         </a>
       </div>
 
-      <div class="pay-note">Secure checkout · Powered by Payhip + Flutterwave · Cancel anytime</div>
+      <div class="pay-note">Secure checkout · Powered by Payhip + Flutterwave · One-time yearly payment</div>
       <div class="pay-methods">
         <span class="method-tag">💳 Card</span>
         <span class="method-tag">🏦 Bank Transfer</span>
