@@ -336,22 +336,13 @@ async function generate() {
   hideExamples();
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/generate', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': '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',
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5', max_tokens: 1000,
-        messages: [{ role: 'user', content:
-          `You are a professional communication assistant. Write a reply to this ${selectedPlat} message.\n\nTone: ${selectedTone}\nPlatform: ${selectedPlat}\n\nMessage:\n"""\n${msg}\n"""\n\nRules:\n- Perfectly match the ${selectedTone} tone\n- Format correctly for ${selectedPlat}: Email gets greeting + sign-off; Slack/WhatsApp are short and casual; LinkedIn is semi-formal\n- Sound natural and human, not robotic\n- Skip filler phrases like "I hope this finds you well"\n- Output ONLY the reply text, nothing else`
-        }]
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg, tone: selectedTone, platform: selectedPlat })
     });
     const data = await res.json();
-    const reply = data.content?.[0]?.text || '';
+    const reply = data.reply || '';
     if (!reply) throw new Error('empty');
 
     repliesUsed++;
