@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReplyFast Premium</title>
+    <style>
+        :root { 
+            --primary: #4f46e5; 
+            --primary-hover: #4338ca; 
+            --bg: #f9fafb; 
+            --card-bg: #ffffff; 
+            --text: #1f2937; 
+            --border: #e5e7eb; 
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 1.5rem 1rem; 
+            display: flex; 
+            justify-content: center; 
+        }
+        .container { 
+            width: 100%; 
+            max-width: 600px; 
+            background: var(--card-bg); 
+            padding: 2rem; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); 
+            box-sizing: border-box; 
+        }
+        h1 { 
+            margin-top: 0; 
+            font-size: 1.6rem; 
+            color: #111827; 
+            border-bottom: 2px solid var(--border); 
+            padding-bottom: 0.75rem; 
+        }
+        .pricing-banner { 
+            background-color: #eff6ff; 
+            border: 1px dashed #3b82f6; 
+            padding: 1rem; 
+            border-radius: 10px; 
+            margin-bottom: 1.5rem; 
+            text-align: center; 
+        }
+        .pricing-banner p { margin: 0 0 0.75rem 0; font-size: 0.9rem; font-weight: 600; color: #1e40af; }
+        .flw-link { 
+            display: inline-block; 
+            background-color: #3b82f6; 
+            color: white; 
+            text-decoration: none; 
+            padding: 0.6rem 1.2rem; 
+            margin: 0.25rem; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 0.85rem; 
+        }
+        .flw-link.annual { background-color: #10b981; }
+        .free-counter-badge { 
+            background-color: #f3f4f6; 
+            border: 1px solid var(--border); 
+            padding: 0.5rem 1rem; 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            display: inline-block; 
+            margin-bottom: 1.25rem; 
+        }
+        .form-group { margin-bottom: 1.25rem; }
+        label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.9rem; color: #374151; }
+        textarea, select { 
+            width: 100%; 
+            padding: 0.75rem; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 1rem; 
+            background-color: #f9fafb; 
+        }
+        textarea { resize: vertical; min-height: 140px; }
+        button { 
+            width: 100%; 
+            background-color: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 0.9rem; 
+            font-size: 1rem; 
+            font-weight: 600; 
+            border-radius: 8px; 
+            cursor: pointer; 
+        }
+        button:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        .output-container { position: relative; margin-top: 1rem; }
+        .output-box { 
+            padding: 1.2rem; 
+            background-color: #f3f4f6; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            min-height: 100px; 
+            white-space: pre-wrap; 
+            font-size: 0.95rem; 
+            line-height: 1.5; 
+            padding-bottom: 3.5rem; 
+        }
+        .copy-btn { 
+            position: absolute; 
+            bottom: 10px; 
+            right: 10px; 
+            width: auto; 
+            background-color: #374151; 
+            padding: 0.5rem 1rem; 
+            font-size: 0.85rem; 
+            border-radius: 6px; 
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .copy-btn.success { background-color: #10b981; }
+        .error-message { 
+            color: #b91c1c; 
+            background-color: #fef2f2; 
+            padding: 0.75rem; 
+            border-radius: 8px; 
+            border: 1px solid #fee2e2; 
+            margin-top: 1rem; 
+            display: none; 
+            font-size: 0.9rem; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📩 ReplyFast Premium</h1>
+    
+    <div class="pricing-banner" id="premiumBillingBanner">
+        <p>Out of free trials? Subscribe below to unlock permanent generation slots:</p>
+        <a href="https://flutterwave.com/pay/replyfastpremium1" target="_blank" class="flw-link">Subscribe Monthly ($9)</a>
+        <a href="https://flutterwave.com/pay/replyfastpremium12" target="_blank" class="flw-link annual">Subscribe Yearly ($89)</a>
+    </div>
+
+    <div style="text-align: right;">
+        <div id="freeCounterBadge" class="free-counter-badge">🎁 Free Trials Left: 3/3</div>
+    </div>
+
+    <div class="form-group">
+        <label for="platform">Target Platform</label>
+        <select id="platform">
+            <option value="Gmail Email">📧 Gmail / Email</option>
+            <option value="LinkedIn Message">💼 LinkedIn</option>
+            <option value="Slack Chat">💬 Slack</option>
+            <option value="WhatsApp Conversation">🟢 WhatsApp</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="tone">Choose Response Tone</label>
+        <select id="tone">
+            <option value="Professional, polite, corporate, and highly structured">Professional</option>
+            <option value="Friendly, warm, welcoming, and casual">Friendly</option>
+            <option value="Concise, strictly brief, directly to the point, and clear">Concise</option>
+            <option value="Assertive, confident, firm, direct, and authoritative">Assertive</option>
+            <option value="Apologetic, deeply regretful, empathetic, and solutions-oriented">Apologetic</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="clientMessage">Paste Incoming Message</label>
+        <textarea id="clientMessage" placeholder="Paste the text or email your client sent you..."></textarea>
+    </div>
+
+    <button id="generateBtn">Generate Fast Reply</button>
+    <div id="errorDisplay" class="error-message"></div>
+
+    <div class="form-group" style="margin-top: 2rem;">
+        <label>Generated Reply</label>
+        <div class="output-container">
+            <div id="outputBox" class="output-box">Your copy-pasteable reply draft will appear here...</div>
+            <button id="copyBtn" class="copy-btn">📋 Copy Text</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let freeTrialsUsed = parseInt(localStorage.getItem('replyfast_free_used')) || 0;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const flwToken = urlParams.get('tx_ref') || urlParams.get('transaction_id');
+    
+    if (flwToken) {
+        localStorage.setItem('replyfast_premium_token', flwToken);
+        window.history.replaceState({}, document.title, window.location.pathname);
+        alert("🎉 Payment Confirmed! Your unlimited premium workspace is fully unlocked.");
+    }
+
+    const hasPremiumToken = localStorage.getItem('replyfast_premium_token');
+    updateCounterDisplay();
+
+    function updateCounterDisplay() {
+        const badge = document.getElementById('freeCounterBadge');
+        const banner = document.getElementById('premiumBillingBanner');
+        
+        if (hasPremiumToken) {
+            badge.innerText = "👑 Premium Workspace Active";
+            badge.style.backgroundColor = "#ecfdf5"; badge.style.borderColor = "#a7f3d0"; badge.style.color = "#065f46";
+            banner.style.display = "none";
+        } else {
+            const remaining = Math.max(0, 3 - freeTrialsUsed);
+            badge.innerText = `🎁 Free Trials Left: ${remaining}/3`;
+            if (remaining > 0) {
+                badge.style.backgroundColor = "#e0f2fe"; badge.style.borderColor = "#bae6fd"; badge.style.color = "#0369a1";
+            } else {
+                badge.style.backgroundColor = "#fee2e2"; badge.style.borderColor = "#fca5a5"; badge.style.color = "#b91c1c";
+            }
+        }
+    }
+
+    document.getElementById('copyBtn').addEventListener('click', function() {
+        const textToCopy = document.getElementById('outputBox').innerText;
+        if (textToCopy.startsWith("Your copy") || textToCopy.startsWith("Writing") || textToCopy.startsWith("Generation failed")) return;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.innerText = "✅ Copied!"; copyBtn.classList.add('success');
+            setTimeout(() => { copyBtn.innerText = "📋 Copy Text"; copyBtn.classList.remove('success'); }, 2000);
+        });
+    });
+
+    document.getElementById('generateBtn').addEventListener('click', async function() {
+        const clientMessage = document.getElementById('clientMessage').value.trim();
+        const tone = document.getElementById('tone').value;
+        const platform = document.getElementById('platform').value;
+        const generateBtn = document.getElementById('generateBtn');
+        const outputBox = document.getElementById('outputBox');
+        const errorDisplay = document.getElementById('errorDisplay');
+
+        errorDisplay.style.display = 'none';
+        const remainingTrials = Math.max(0, 3 - freeTrialsUsed);
+        const activeToken = localStorage.getItem('replyfast_premium_token');
+
+        if (remainingTrials <= 0 && !activeToken) {
+            return showError("Your 3 free trials have expired. Please use the checkout buttons at the top to subscribe.");
+        }
+        if (!clientMessage) return showError("Please paste an incoming message first.");
+
+        generateBtn.disabled = true; generateBtn.innerText = "Drafting..."; outputBox.innerText = "Writing your response...";
+
+        try {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    clientMessage, tone, platform, 
+                    premiumToken: activeToken,
+                    bypassAuth: (remainingTrials > 0 && !activeToken)
+                })
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Server processing exception.");
+            
+            outputBox.innerText = data.reply;
+
+            if (remainingTrials > 0 && !activeToken) {
+                freeTrialsUsed++;
+                localStorage.setItem('replyfast_free_used', freeTrialsUsed);
+                updateCounterDisplay();
+            }
+        } catch (err) {
+            showError(err.message); outputBox.innerText = "Generation failed.";
+        } finally {
+            generateBtn.disabled = false; generateBtn.innerText = "Generate Fast Reply";
+        }
+    });
+
+    function showError(msg) {
+        const errorDisplay = document.getElementById('errorDisplay');
+        errorDisplay.innerText = msg; errorDisplay.style.display = 'block';
+    }
+</script>
+</body>
+</html>
