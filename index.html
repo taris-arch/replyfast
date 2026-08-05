@@ -129,6 +129,25 @@
             display: none; 
             font-size: 0.9rem; 
         }
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .example-chip {
+            width: auto;
+            background-color: #eef2ff;
+            color: #4338ca;
+            border: 1px solid #c7d2fe;
+            padding: 0.45rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .example-chip:hover { background-color: #e0e7ff; }
     </style>
 </head>
 <body>
@@ -138,12 +157,12 @@
     
     <div class="pricing-banner" id="premiumBillingBanner">
         <p>Out of free trials? Subscribe below to unlock permanent generation slots:</p>
-        <a href="https://flutterwave.com/pay/replyfastpremium1" target="_blank" class="flw-link">Subscribe Monthly ($9)</a>
-        <a href="https://flutterwave.com/pay/replyfastpremium12" target="_blank" class="flw-link annual">Subscribe Yearly ($89)</a>
+        <a href="https://flutterwave.com/pay/YOUR_MONTHLY_LINK" target="_blank" class="flw-link">Subscribe Monthly ($9)</a>
+        <a href="https://flutterwave.com/pay/YOUR_ANNUAL_LINK" target="_blank" class="flw-link annual">Subscribe Yearly ($89)</a>
     </div>
 
     <div style="text-align: right;">
-        <div id="freeCounterBadge" class="free-counter-badge">🎁 Free Trials Left: 3/3</div>
+        <div id="freeCounterBadge" class="free-counter-badge">🎁 Free Trials Used: 0/3</div>
     </div>
 
     <div class="form-group">
@@ -165,6 +184,16 @@
             <option value="Assertive, confident, firm, direct, and authoritative">Assertive</option>
             <option value="Apologetic, deeply regretful, empathetic, and solutions-oriented">Apologetic</option>
         </select>
+    </div>
+
+    <div class="form-group">
+        <label>Try an Example</label>
+        <div class="example-chips">
+            <button type="button" class="example-chip" data-platform="Gmail Email" data-message="Hi, I just wanted to follow up on the proposal I sent over last week. Have you had a chance to review it? Let me know if you have any questions or if there's anything I can clarify before we move forward.">📧 Follow-up on a proposal sent last week</button>
+            <button type="button" class="example-chip" data-platform="LinkedIn Message" data-message="Hi! I came across your profile and think your background would be a great fit for a role we're hiring for. Would you be open to a quick chat this week to hear more about it?">💼 LinkedIn recruiter reaching out about a role</button>
+            <button type="button" class="example-chip" data-platform="WhatsApp Conversation" data-message="Hey, really like the quote you sent over, but it's a bit above what we budgeted for. Any chance you could do 20% off?">🙅 Client asking for a discount you can't give</button>
+            <button type="button" class="example-chip" data-platform="Slack Chat" data-message="Hi, something urgent has come up on my end. Would it be possible to reschedule our meeting from Thursday at 2pm to sometime next week instead?">📅 Request to reschedule a meeting</button>
+        </div>
     </div>
 
     <div class="form-group">
@@ -208,8 +237,9 @@
             badge.style.backgroundColor = "#ecfdf5"; badge.style.borderColor = "#a7f3d0"; badge.style.color = "#065f46";
             banner.style.display = "none";
         } else {
+            const used = Math.min(freeTrialsUsed, 3);
             const remaining = Math.max(0, 3 - freeTrialsUsed);
-            badge.innerText = `🎁 Free Trials Left: ${remaining}/3`;
+            badge.innerText = `🎁 Free Trials Used: ${used}/3`;
             if (remaining > 0) {
                 badge.style.backgroundColor = "#e0f2fe"; badge.style.borderColor = "#bae6fd"; badge.style.color = "#0369a1";
             } else {
@@ -217,6 +247,14 @@
             }
         }
     }
+
+    document.querySelectorAll('.example-chip').forEach(function(chip) {
+        chip.addEventListener('click', function() {
+            document.getElementById('clientMessage').value = chip.getAttribute('data-message');
+            document.getElementById('platform').value = chip.getAttribute('data-platform');
+            document.getElementById('clientMessage').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
 
     document.getElementById('copyBtn').addEventListener('click', function() {
         const textToCopy = document.getElementById('outputBox').innerText;
