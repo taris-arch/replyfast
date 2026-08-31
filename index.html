@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -157,8 +158,23 @@
     
     <div class="pricing-banner" id="premiumBillingBanner">
         <p>Out of free trials? Subscribe below to unlock permanent generation slots:</p>
-        <a href="https://flutterwave.com/pay/replyfastpremium1" target="_blank" class="flw-link">Subscribe Monthly ($9)</a>
-        <a href="https://flutterwave.com/pay/replyfastpremium12" target="_blank" class="flw-link annual">Subscribe Yearly ($89)</a>
+        <a href="https://capitoflare.gumroad.com/l/4" target="_blank" class="flw-link">Subscribe on Gumroad ($9/mo or $89/yr)</a>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <span id="licenseKeyToggle" style="font-size: 0.85rem; color: #6b7280; text-decoration: underline; cursor: pointer;">Already subscribed? Enter your license key</span>
+        <div id="licenseKeyBox" style="display: none; margin-top: 0.6rem;">
+            <input type="text" id="licenseKeyInput" placeholder="e.g. 6F0E4C97-B72A4E69-A11BF6C4-AF6517E7" style="width: 65%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem;">
+            <button type="button" id="licenseKeySubmit" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem; margin-left: 0.3rem;">Unlock</button>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 1.25rem;">
+        <span id="accessCodeToggle" style="font-size: 0.85rem; color: #6b7280; text-decoration: underline; cursor: pointer;">Have an access code?</span>
+        <div id="accessCodeBox" style="display: none; margin-top: 0.6rem;">
+            <input type="text" id="accessCodeInput" placeholder="Enter your access code" style="width: 60%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem;">
+            <button type="button" id="accessCodeSubmit" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem; margin-left: 0.3rem;">Unlock</button>
+        </div>
     </div>
 
     <div style="text-align: right;">
@@ -215,15 +231,35 @@
 
 <script>
     let freeTrialsUsed = parseInt(localStorage.getItem('replyfast_free_used')) || 0;
+    const hasInfluencerAccess = localStorage.getItem('replyfast_influencer_code');
+
+    document.getElementById('accessCodeToggle').addEventListener('click', function() {
+        const box = document.getElementById('accessCodeBox');
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.getElementById('accessCodeSubmit').addEventListener('click', function() {
+        const code = document.getElementById('accessCodeInput').value.trim();
+        if (code) {
+            localStorage.setItem('replyfast_influencer_code', code);
+            alert("Access code saved! It will be validated the next time you generate a reply.");
+            location.reload();
+        }
+    });
     
-    const urlParams = new URLSearchParams(window.location.search);
-    const flwToken = urlParams.get('tx_ref') || urlParams.get('transaction_id');
-    
-    if (flwToken) {
-        localStorage.setItem('replyfast_premium_token', flwToken);
-        window.history.replaceState({}, document.title, window.location.pathname);
-        alert("🎉 Payment Confirmed! Your unlimited premium workspace is fully unlocked.");
-    }
+    document.getElementById('licenseKeyToggle').addEventListener('click', function() {
+        const box = document.getElementById('licenseKeyBox');
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.getElementById('licenseKeySubmit').addEventListener('click', function() {
+        const key = document.getElementById('licenseKeyInput').value.trim();
+        if (key) {
+            localStorage.setItem('replyfast_premium_token', key);
+            alert("License key saved! It will be validated the next time you generate a reply.");
+            location.reload();
+        }
+    });
 
     const hasPremiumToken = localStorage.getItem('replyfast_premium_token');
     updateCounterDisplay();
@@ -235,6 +271,10 @@
         if (hasPremiumToken) {
             badge.innerText = "👑 Premium Workspace Active";
             badge.style.backgroundColor = "#ecfdf5"; badge.style.borderColor = "#a7f3d0"; badge.style.color = "#065f46";
+            banner.style.display = "none";
+        } else if (hasInfluencerAccess) {
+            badge.innerText = "🌟 Partner Access - Unlimited";
+            badge.style.backgroundColor = "#fdf4ff"; badge.style.borderColor = "#f0abfc"; badge.style.color = "#86198f";
             banner.style.display = "none";
         } else {
             const used = Math.min(freeTrialsUsed, 3);
@@ -277,8 +317,9 @@
         errorDisplay.style.display = 'none';
         const remainingTrials = Math.max(0, 3 - freeTrialsUsed);
         const activeToken = localStorage.getItem('replyfast_premium_token');
+        const activeAccessCode = localStorage.getItem('replyfast_influencer_code');
 
-        if (remainingTrials <= 0 && !activeToken) {
+        if (remainingTrials <= 0 && !activeToken && !activeAccessCode) {
             return showError("Your 3 free trials have expired. Please use the checkout buttons at the top to subscribe.");
         }
         if (!clientMessage) return showError("Please paste an incoming message first.");
@@ -292,7 +333,8 @@
                 body: JSON.stringify({ 
                     clientMessage, tone, platform, 
                     premiumToken: activeToken,
-                    bypassAuth: (remainingTrials > 0 && !activeToken)
+                    accessCode: activeAccessCode,
+                    bypassAuth: (remainingTrials > 0 && !activeToken && !activeAccessCode)
                 })
             });
 
@@ -301,7 +343,7 @@
             
             outputBox.innerText = data.reply;
 
-            if (remainingTrials > 0 && !activeToken) {
+            if (remainingTrials > 0 && !activeToken && !activeAccessCode) {
                 freeTrialsUsed++;
                 localStorage.setItem('replyfast_free_used', freeTrialsUsed);
                 updateCounterDisplay();
