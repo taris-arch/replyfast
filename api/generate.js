@@ -3,9 +3,18 @@ export default async function handler(req, res) {
     const { clientMessage, tone, platform, premiumToken, bypassAuth, accessCode } = req.body;
     const chatgptApiKey = process.env.CHATGPT_KEY;
     const gumroadProductId = process.env.GUMROAD_PRODUCT_ID; // Your Gumroad Product ID (from the License Key block)
-    const influencerAccessCode = process.env.INFLUENCER_ACCESS_CODE; // Shared code you give to influencers for free lifetime access
 
-    const hasValidInfluencerCode = accessCode && influencerAccessCode && accessCode === influencerAccessCode;
+    // INFLUENCER_CODES is a JSON string in your Vercel env vars, e.g:
+    // {"UKMIKE2026":"Mike (UK)","USJANE2026":"Jane (US)","CAALEX2026":"Alex (Canada)"}
+    // To revoke ONE influencer without affecting the others, just delete their entry from this JSON and redeploy.
+    let influencerCodesMap = {};
+    try {
+        influencerCodesMap = JSON.parse(process.env.INFLUENCER_CODES || "{}");
+    } catch (e) {
+        influencerCodesMap = {};
+    }
+
+    const hasValidInfluencerCode = Boolean(accessCode && influencerCodesMap[accessCode]);
 
     if (!bypassAuth && !hasValidInfluencerCode) {
         if (!premiumToken) {
