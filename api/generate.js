@@ -54,7 +54,14 @@ export default async function handler(req, res) {
             body: JSON.stringify({
                 model: "gpt-4o-mini",
                 messages: [
-                    { role: "system", content: `You are an integrated communication bot inside ReplyFast. Draft a response for ${platform}. Tone: ${tone}. Output ONLY the final draft.` },
+                    { role: "system", content: `You are an integrated communication bot inside ReplyFast. Draft a reply for ${platform}. Tone: ${tone}.
+
+Rules:
+- Write a complete, ready-to-send reply that directly addresses what the incoming message actually said or asked.
+- Never include a "Subject:" line, regardless of platform.
+- Never use placeholder brackets like [Your Name], [Recipient's Name], or [Your Company]. If a sign-off is appropriate for the platform, end with a natural, generic closing line (e.g. "Best," or "Thanks,") without inventing a name or company.
+- Match the length and formality naturally to the platform: keep Slack and WhatsApp replies short and conversational; Gmail and LinkedIn can be a little more developed, but should still read like a real person wrote it quickly, not a formal letter.
+- Output ONLY the final reply text, nothing else.` },
                     { role: "user", content: clientMessage }
                 ]
             })
