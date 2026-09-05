@@ -47,7 +47,7 @@
             text-align: center; 
         }
         .pricing-banner p { margin: 0 0 0.75rem 0; font-size: 0.9rem; font-weight: 600; color: #1e40af; }
-        .flw-link { 
+        .subscribe-link { 
             display: inline-block; 
             background-color: #3b82f6; 
             color: white; 
@@ -58,7 +58,6 @@
             font-weight: bold; 
             font-size: 0.85rem; 
         }
-        .flw-link.annual { background-color: #10b981; }
         .free-counter-badge { 
             background-color: #f3f4f6; 
             border: 1px solid var(--border); 
@@ -157,7 +156,7 @@
     
     <div class="pricing-banner" id="premiumBillingBanner">
         <p>Out of free trials? Subscribe below to unlock permanent generation slots:</p>
-        <a href="https://YOURUSERNAME.gumroad.com/l/YOUR_PRODUCT_SLUG" target="_blank" class="flw-link">Subscribe on Gumroad ($9/mo or $89/yr)</a>
+        <a href="https://capitoflare.gumroad.com/l/4" target="_blank" class="subscribe-link">Subscribe on Gumroad ($9/mo or $89/yr)</a>
     </div>
 
     <div style="text-align: center; margin-bottom: 1rem;">
@@ -214,6 +213,11 @@
     <div class="form-group">
         <label for="clientMessage">Paste Incoming Message</label>
         <textarea id="clientMessage" placeholder="Paste the text or email your client sent you..."></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="extraContext">Anything specific to include? (optional)</label>
+        <textarea id="extraContext" placeholder="e.g. I'm free Tuesday or Thursday afternoon. Final price is $2,500. Timeline is 6 weeks." style="min-height: 70px;"></textarea>
     </div>
 
     <button id="generateBtn">Generate Fast Reply</button>
@@ -307,6 +311,7 @@
 
     document.getElementById('generateBtn').addEventListener('click', async function() {
         const clientMessage = document.getElementById('clientMessage').value.trim();
+        const extraContext = document.getElementById('extraContext').value.trim();
         const tone = document.getElementById('tone').value;
         const platform = document.getElementById('platform').value;
         const generateBtn = document.getElementById('generateBtn');
@@ -330,7 +335,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    clientMessage, tone, platform, 
+                    clientMessage, extraContext, tone, platform, 
                     premiumToken: activeToken,
                     accessCode: activeAccessCode,
                     bypassAuth: (remainingTrials > 0 && !activeToken && !activeAccessCode)
