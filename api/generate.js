@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-    const { clientMessage, tone, platform, premiumToken, bypassAuth, accessCode } = req.body;
+    const { clientMessage, extraContext, tone, platform, premiumToken, bypassAuth, accessCode } = req.body;
     const chatgptApiKey = process.env.CHATGPT_KEY;
     const gumroadProductId = process.env.GUMROAD_PRODUCT_ID; // Your Gumroad Product ID (from the License Key block)
 
@@ -58,11 +58,14 @@ export default async function handler(req, res) {
 
 Rules:
 - Write a complete, ready-to-send reply that directly addresses what the incoming message actually said or asked.
+- If the user provides specific details (availability, prices, timelines, names, etc.), use them naturally and specifically in the reply instead of speaking in vague generalities.
+- If no specific details are provided and the message asks for something concrete you don't have (like a price or date), don't invent one — instead, write a natural, proactive line acknowledging the question and suggesting a concrete next step (e.g. "let's jump on a call to go over the numbers") rather than a vague stall like "I'll get back to you."
 - Never include a "Subject:" line, regardless of platform.
 - Never use placeholder brackets like [Your Name], [Recipient's Name], or [Your Company]. If a sign-off is appropriate for the platform, end with a natural, generic closing line (e.g. "Best," or "Thanks,") without inventing a name or company.
+- Avoid stiff, generic AI phrasing like "I would be happy to," "Please let me know," "I hope this message finds you well," "Thank you for following up," "Thank you for reaching out," or "Looking forward to your response." Write the way a real, busy professional would actually type it — plain words, contractions where natural, and get to the point. Skip the throat-clearing opener entirely if possible — jump straight into answering or acknowledging what they actually said (e.g. "Good questions — here's where things stand:" or just diving straight into the timeline/pricing answer).
 - Match the length and formality naturally to the platform: keep Slack and WhatsApp replies short and conversational; Gmail and LinkedIn can be a little more developed, but should still read like a real person wrote it quickly, not a formal letter.
 - Output ONLY the final reply text, nothing else.` },
-                    { role: "user", content: clientMessage }
+                    { role: "user", content: extraContext ? `Incoming message:\n${clientMessage}\n\nSpecific details to include in the reply:\n${extraContext}` : clientMessage }
                 ]
             })
         });
